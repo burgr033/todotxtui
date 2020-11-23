@@ -54,7 +54,8 @@ To get a local copy up and running follow these simple steps.
   * alternate keyword for today (maybe in your language)
 * alternate_tomorrow
   * alternate keyword for tomorrow (maybe in your language)
-
+* editor_path
+  * full path to editor for opening text files
 ### Modes
 * OverView Mode
   * in overview mode you can cycle through widgets with arrows keys, and enter focus mode with enter.
