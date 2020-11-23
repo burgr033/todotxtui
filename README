@@ -22,10 +22,6 @@
   </ol>
 </details>
 
-## Screenshots
-
-![Workflow](images/workflow.gif)
-
 <!-- GETTING STARTED -->
 ## Getting Started
 
@@ -81,6 +77,11 @@ To get a local copy up and running follow these simple steps.
     * ESC - for exiting the widget. ENTER on respective item moves it to "DONE"
   * DONE in this widget is everything finished.
     * ESC - for exiting the widget. DEL for deleting items from the todo.txt list entirely
+
+## Screenshots
+
+![Workflow](images/workflow.gif)
+
 <!-- ROADMAP -->
 ## Roadmap
 
