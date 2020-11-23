@@ -138,7 +138,8 @@ class SimpleTodoList:
 
     # opening file wrapper function that is called when you press o in overview mode
     def open_todotxt_file(self):
-        # os.system(config['todo_file_path'])
+        command="{} {}".format(config['editor_path'],config['todo_file_path'])
+        os.system(command)
         self.read_todo_file()
 
     # i forgot why we needed this. *shrug* It works...
