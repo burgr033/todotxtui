@@ -4,8 +4,6 @@
   <h3 align="center">TODOTXTUI - an intuitive TUI for TODO.txt files</h3>
 </p>
 
-
-
 <!-- TABLE OF CONTENTS -->
   <summary><h2 style="display: inline-block">Table of Contents</h2></summary>
   <ol>
@@ -33,7 +31,7 @@ To get a local copy up and running follow these simple steps.
    ```
 2. Install requirements
    ```sh
-   pip -r requirments.txt
+   pip -r requirements.txt
    ```
 3. Run!
    ```sh
@@ -63,18 +61,21 @@ To get a local copy up and running follow these simple steps.
     * you can also toggle some functions with following keys: 
       * q - quit application
       * TAB - cycle through widgets without using arrow keys and ENTER
-      * f - find and mark | opens file dialog
-      * r - refresh | refreshes the whole GUI
+      * f - find and mark | opens find/mark dialog (also upon opening the find/mark dialog the previously marked items are cleared)
+      * r - refresh | refreshes the whole GUI and reloads changes made to todo.txt file from any other source
       * o - opens todo.txt in default system editor.
 * Focus Mode
   * TODO Item Widget: Just hammer in your new TODO and press enter.
     * if you want a due date, than use due:2020-03-10 format. If you want to use due date today or tomorrow you can just type due:today or due:tomorrow (or the alternate keywords you set in config.json) it will be replaced with the according date.
   * FUNNEL in this widget is everything you are not currently working on.
-    * ESC - for exiting the widget. ENTER on respective item moves it to "DOING"
+    * ESC - for exiting the widget.
+    * ENTER on respective item moves it to "DOING"
   * DOING in this widget is everything you are working on at the moment
-    * ESC - for exiting the widget. ENTER on respective item moves it to "DONE"
+    * ESC - for exiting the widget.
+    * ENTER on respective item moves it to "DONE"
   * DONE in this widget is everything finished.
-    * ESC - for exiting the widget. DEL for deleting items from the todo.txt list entirely
+    * ESC - for exiting the widget.
+    * DEL for deleting items from the todo.txt list entirely
 
 ## Screenshots
 
@@ -97,8 +98,9 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 <!-- NOTE -->
 ## Note
-Please note, that I don't know what the fuck I am doing. I just google stuff and use code snippets from StackOverflow. If you killed your todo.txt using this application, joke on you.
+* Please note, that I don't know what the fuck I am doing. I just google stuff and use code snippets from StackOverflow. If you killed your todo.txt using this application, joke on you.
 No Backup? No Mercy!
+* Also note, that this is fully compatible with todotxt standard, but does not fully implement it, so it is not strictly following todotxt syntax (e.g. there is a completion date set upon completion, but todotxt standard says when you set completion date, you need creation date, and i don't provide creation date simply, because i needed the space on the screen)
 
 <!-- CONTACT -->
 ## Contact
@@ -111,6 +113,6 @@ Project Link: [https://github.com/cigh033/todotxtui](https://github.com/cigh033/
 ## Acknowledgements
 
 * [jwoldek, creator of py_cui](https://github.com/jwlodek/py_cui)
-* [telday, who's py_cui todotxt gave me the idea](https://gist.github.com/telday/227d39502d2fe017deb8b8b3c3b007f9)
-* [SNicke Manarin, ScreenToGif (used for screenshots)](https://github.com/NickeManarin/ScreenToGif)
+* [telday, whose py_cui todotxt script served as the base of mine](https://gist.github.com/telday/227d39502d2fe017deb8b8b3c3b007f9)
+* [Nicke Manarin, ScreenToGif (used for screenshots)](https://github.com/NickeManarin/ScreenToGif)
 * [Plaintext Productivity provided by todotxt](http://todotxt.org/)
