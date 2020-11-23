@@ -1,5 +1,6 @@
 TODO.txt
 py_cui_log.txt
+config.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
