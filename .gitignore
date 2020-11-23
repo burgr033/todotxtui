@@ -1,5 +1,7 @@
-# Byte-compiled / optimized / DLL files
 TODO.txt
+py_cui_log.txt
+
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
