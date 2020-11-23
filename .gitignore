@@ -1,4 +1,5 @@
 # Byte-compiled / optimized / DLL files
+TODO.txt
 __pycache__/
 *.py[cod]
 *$py.class
@@ -137,7 +138,7 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-.vscode/*
+.vscode
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
