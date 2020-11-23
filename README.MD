@@ -66,7 +66,7 @@ To get a local copy up and running follow these simple steps.
       * o - opens todo.txt in default system editor.
 * Focus Mode
   * TODO Item Widget: Just hammer in your new TODO and press enter.
-    * if you want a due date, than use due:2020-03-10 format. If you want to use due date today or tomorrow you can just type due:today or due:tomorrow (or the alternate keywords you set in config.json) it will be replaced with the according date.
+    * if you want a due date, than use due:2020-03-10 format. If you want to use due date today or tomorrow you can just type due:today or due:tomorrow (or the alternate keywords you set in config.json) it will be replaced with the according date. Today will be marked red and tomorrow will be marked yellow.
   * FUNNEL in this widget is everything you are not currently working on.
     * ESC - for exiting the widget.
     * ENTER on respective item moves it to "DOING"
