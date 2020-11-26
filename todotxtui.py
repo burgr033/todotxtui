@@ -4,10 +4,31 @@ import logging
 import datetime
 import json
 from re import escape
+from pathlib import Path
+
+config_filename = "config.json"
+
+config_home = Path.home() / '.todotxtui' / config_filename
+
+if(config_home.is_file()):
+    config_file = config_home
+elif(Path(config_filename).is_file()):
+    config_file = config_filename
+else:
+    print("missing config file. exit")
+    os._exit(1)
 
 # loading all the config
-with open('config.json', 'r') as f:
+with open(config_file, 'r') as f:
     config = json.load(f)
+
+todo_file = Path(config['todo_file_path'])
+
+if(todo_file.is_file()):
+    pass
+else:
+    print("missing todo file")
+    os._exit(2)
 
 # setting variables
 today = datetime.datetime.today()
@@ -138,7 +159,8 @@ class SimpleTodoList:
 
     # opening file wrapper function that is called when you press o in overview mode
     def open_todotxt_file(self):
-        command="{} {}".format(config['editor_path'],config['todo_file_path'])
+        command = "{} {}".format(
+            config['editor_path'], config['todo_file_path'])
         os.system(command)
         self.read_todo_file()
 
