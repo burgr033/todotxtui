@@ -19,7 +19,7 @@ else:
     os._exit(1)
 
 # loading all the config
-with open(config_file, 'r') as f:
+with open(config_file, 'r', encoding='utf-8-sig') as f:
     config = json.load(f)
 
 todo_file = Path(config['todo_file_path'])
@@ -46,7 +46,7 @@ class SimpleTodoList:
         in_progress = []
         done = []
         if os.path.exists(config['todo_file_path']):
-            todo_fp = open(config['todo_file_path'], 'r')
+            todo_fp = open(config['todo_file_path'], 'r', encoding='utf-8-sig')
             line = todo_fp.readline()
             while line:
                 line = line.strip()
@@ -209,7 +209,7 @@ class SimpleTodoList:
     def save_todo_file(self):
         if os.path.exists(config['todo_file_path']):
             os.remove(config['todo_file_path'])
-        todo_fp = open(config['todo_file_path'], 'w')
+        todo_fp = open(config['todo_file_path'], 'w', encoding='utf-8-sig')
         todo_items = self.todo_scroll_cell.get_item_list()
         in_progress_items = self.in_progress_scroll_cell.get_item_list()
         done_items = self.done_scroll_cell.get_item_list()
