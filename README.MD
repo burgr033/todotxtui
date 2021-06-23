@@ -1,6 +1,6 @@
 <!-- PROJECT LOGO -->
 <p align="center">
-    <a href=https://github.com/cigh033/todotxtui.git><img src=images/logo.gif/></a>
+    <a href=https://github.com/cigh033/todotxtui.git><img src=.github/logo.gif/></a>
   <h3 align="center">TODOTXTUI - an intuitive TUI for TODO.txt files</h3>
 </p>
 
@@ -80,7 +80,7 @@ To get a local copy up and running follow these simple steps.
 
 ## Screenshots
 
-![Workflow](images/workflow.gif)
+![Workflow](.github/workflow.gif)
 
 <!-- ROADMAP -->
 ## Roadmap
