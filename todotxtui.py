@@ -130,13 +130,13 @@ class SimpleTodoList:
     # function for coloring due dates (tomorrow and today)
     def color_context(self):
         self.todo_scroll_cell.add_text_color_rule(
-            "due:{0}" .format(today), py_cui.RED_ON_BLACK, 'contains', match_type='regex')
+            "due:{0}" .format(today), py_cui.WHITE_ON_RED, 'contains', match_type='regex')
         self.todo_scroll_cell.add_text_color_rule(
-            "due:{0}" .format(tomorrow), py_cui.YELLOW_ON_BLACK, 'contains', match_type='regex')
+            "due:{0}" .format(tomorrow), py_cui.WHITE_ON_YELLOW, 'contains', match_type='regex')
         self.in_progress_scroll_cell.add_text_color_rule(
-            "due:{0}" .format(today), py_cui.RED_ON_BLACK, 'contains', match_type='regex')
+            "due:{0}" .format(today), py_cui.WHITE_ON_RED, 'contains', match_type='regex')
         self.in_progress_scroll_cell.add_text_color_rule(
-            "due:{0}" .format(tomorrow), py_cui.YELLOW_ON_BLACK, 'contains', match_type='regex')
+            "due:{0}" .format(tomorrow), py_cui.WHITE_ON_YELLOW, 'contains', match_type='regex')
 
     # function for clearing all colors
     def clear_all_colors(self):
@@ -167,6 +167,9 @@ class SimpleTodoList:
     # i forgot why we needed this. *shrug* It works...
     def find_form_trigger(self, form_output):
         self.mark_line(form_output)
+
+    def prefil_textbox(self):
+        self.new_todo_textbox.set_text("() {}".format(today))
 
     # function for opening search form
     def open_find_form(self):
@@ -228,24 +231,29 @@ class SimpleTodoList:
 
         self.new_todo_textbox = self.master.add_text_box(
             'TODO Item',       0, 0, row_span=1, column_span=6)
+        self.new_todo_textbox._focus_border_color = py_cui.BLUE_ON_BLACK
 
         self.todo_scroll_cell = self.master.add_scroll_menu(
-            'FUNNEL',       1, 0, row_span=7, column_span=3)
+            'BACKLOG',       1, 0, row_span=7, column_span=3)
+        self.todo_scroll_cell._focus_border_color = py_cui.BLUE_ON_BLACK
 
         self.in_progress_scroll_cell = self.master.add_scroll_menu(
             'DOING',        1, 3, row_span=5, column_span=3)
+        self.in_progress_scroll_cell._focus_border_color = py_cui.BLUE_ON_BLACK
 
         self.done_scroll_cell = self.master.add_scroll_menu(
             'DONE',         6, 3, row_span=2, column_span=3)
 
+        self.done_scroll_cell._focus_border_color = py_cui.BLUE_ON_BLACK
+
         self.todo_scroll_cell.set_selected_color(
-            py_cui.GREEN_ON_BLACK)
+            py_cui.BLACK_ON_YELLOW)
 
         self.in_progress_scroll_cell.set_selected_color(
-            py_cui.GREEN_ON_BLACK)
+            py_cui.BLACK_ON_YELLOW)
 
         self.done_scroll_cell.set_selected_color(
-            py_cui.GREEN_ON_BLACK)
+            py_cui.BLACK_ON_YELLOW)
 
         # press s in overview mode to safety save the file.
         self.master.add_key_command(
