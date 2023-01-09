@@ -46,6 +46,8 @@ To get a local copy up and running follow these simple steps.
   * (true|false) debug parameter (generates log file in running dir)
 * unicode_borders
   * (true|false) If you want unicode rounded sexy corners or not
+* color_projects
+  * (true|false) Feature is implemented but useless due to the limited colors of py_cui
 * todo_file_path
   * File Path for your Todo.txt file
 * WIP_identifier
