@@ -1,9 +1,12 @@
+from dataclasses import replace
 import py_cui
 import os
 import logging
 import datetime
 import json
+from random import choice
 from re import escape
+from re import findall
 from pathlib import Path
 
 config_filename = "config.json"
@@ -113,7 +116,7 @@ class SimpleTodoList:
 
     # function for adding items from the text box
     def add_item(self):
-        self.color_context()
+        self.color_everything()
         item_to_add = '{}'.format(self.new_todo_textbox.get())
         if len(item_to_add) > 1:
             finished_item_to_add = self.replace_keywords(item_to_add)
@@ -128,7 +131,14 @@ class SimpleTodoList:
             self.save_todo_file()
 
     # function for coloring due dates (tomorrow and today)
-    def color_context(self):
+
+    def color_everything(self):
+        self.color_date()
+        self.color_context()
+        if(config["color_projects"]):
+            self.color_project()
+
+    def color_date(self):
         self.todo_scroll_cell.add_text_color_rule(
             "due:{0}" .format(today), py_cui.WHITE_ON_RED, 'contains', match_type='regex')
         self.todo_scroll_cell.add_text_color_rule(
@@ -138,6 +148,23 @@ class SimpleTodoList:
         self.in_progress_scroll_cell.add_text_color_rule(
             "due:{0}" .format(tomorrow), py_cui.WHITE_ON_YELLOW, 'contains', match_type='regex')
 
+    # function to color everything with @ to one color
+    def color_context(self):
+        self.todo_scroll_cell.add_text_color_rule("(@[^\s]+)", py_cui.GREEN_ON_BLACK, 'contains', match_type='regex')
+        self.in_progress_scroll_cell.add_text_color_rule("(@[^\s]+)", py_cui.GREEN_ON_BLACK, 'contains', match_type='regex')
+
+# this should be to color different projects in different colors, as py_cui only has very a limited color amount, this is disabled by default via config
+    def color_project(self):
+        available_colors = [py_cui.MAGENTA_ON_BLACK, py_cui.CYAN_ON_BLACK, py_cui.YELLOW_ON_BLACK, py_cui.BLUE_ON_BLACK, py_cui.RED_ON_BLACK]
+        todoitems = self.todo_scroll_cell.get_item_list()
+        inprogressitems = self.in_progress_scroll_cell.get_item_list()
+        all_items = todoitems + inprogressitems
+        filtered_projects = set(findall(r"(\+[a-zA-Z-0-9]*)"," ".join(all_items)))
+        for project in filtered_projects:
+            color_choice = choice(available_colors)
+            self.todo_scroll_cell.add_text_color_rule(project.replace("+","\+"), color_choice, 'contains', match_type='regex')
+            self.in_progress_scroll_cell.add_text_color_rule(project.replace("+","\+"), color_choice, 'contains', match_type='regex')  
+    
     # function for clearing all colors
     def clear_all_colors(self):
         self.todo_scroll_cell._text_color_rules = []
@@ -155,7 +182,7 @@ class SimpleTodoList:
             search_term, py_cui.WHITE_ON_BLUE, 'contains')
         self.todo_scroll_cell.add_text_color_rule(
             search_term, py_cui.WHITE_ON_BLUE, 'contains')
-        self.color_context()
+        self.color_everything()
 
     # opening file wrapper function that is called when you press o in overview mode
     def open_todotxt_file(self):
@@ -171,6 +198,23 @@ class SimpleTodoList:
     def prefil_textbox(self):
         self.new_todo_textbox.set_text("() {}".format(today))
 
+    #hightlight one project as accessed through the form for highlighting projects
+    # yes i know i recycled the code from above. I'm currently lazy
+    def highlight_string(self,string):
+            self.color_everything()
+            self.todo_scroll_cell.add_text_color_rule(string.replace("+","\+"), py_cui.BLUE_ON_BLACK, 'contains', match_type='regex')
+            self.in_progress_scroll_cell.add_text_color_rule(string.replace("+","\+"), py_cui.BLUE_ON_BLACK, 'contains', match_type='regex')  
+
+    # shows a popup with a filtered list so you can select certain project contextes (+) and highlight
+    # yes i know i recycled the code from above. I'm currently lazy
+    def open_project_highlight_form(self):
+        self.clear_all_colors()
+        todoitems = self.todo_scroll_cell.get_item_list()
+        inprogressitems = self.in_progress_scroll_cell.get_item_list()
+        all_items = todoitems + inprogressitems
+        filtered_projects = set(findall(r"(\+[a-zA-Z-0-9]*)"," ".join(all_items)))
+        self.master.show_menu_popup("Highlight Projects",filtered_projects,self.highlight_string)
+    
     # function for opening search form
     def open_find_form(self):
         self.clear_all_colors()
@@ -247,18 +291,19 @@ class SimpleTodoList:
         self.done_scroll_cell._focus_border_color = py_cui.BLUE_ON_BLACK
 
         self.todo_scroll_cell.set_selected_color(
-            py_cui.BLACK_ON_YELLOW)
+            py_cui.BLACK_ON_WHITE)
 
         self.in_progress_scroll_cell.set_selected_color(
-            py_cui.BLACK_ON_YELLOW)
+            py_cui.BLACK_ON_WHITE)
 
         self.done_scroll_cell.set_selected_color(
-            py_cui.BLACK_ON_YELLOW)
-
+            py_cui.BLACK_ON_WHITE)
         # press s in overview mode to safety save the file.
         self.master.add_key_command(
             py_cui.keys.KEY_S_LOWER, self.save_todo_file)
         # press r to refresh the file and apply SORT
+        self.master.add_key_command(
+            py_cui.keys.KEY_P_LOWER, self.open_project_highlight_form)
         self.master.add_key_command(
             py_cui.keys.KEY_R_LOWER, self.read_todo_file)
         # press f to open the search form and reset any marked lines from prior search
@@ -290,7 +335,7 @@ class SimpleTodoList:
         # read file during init
         self.read_todo_file()
         # color the due dates now
-        self.color_context()
+        self.color_everything()
 
         # this is some hacky shit so that no item is selected and you don't see the first lines marked in every widget. This does not work after refresh.
         self.todo_scroll_cell.set_selected_item_index(-1)
@@ -316,7 +361,7 @@ if(config['unicode_borders']):
 
 # this text is shown in overview mode at the bottom border of the TUI
 root.set_status_bar_text(
-    'q - quit | TAB - cycle through widgets | f - find and mark | r - refresh | o - open TODO.txt')
+    'q - quit | TAB - cycle through widgets | p - highlight project context | f - find and mark | s - safe todo.txt | r - reload and re-sort | o - open TODO.txt')
 # set some titles...
 root.set_title('TodoTxTui')
 s = SimpleTodoList(root)

@@ -1,5 +1,6 @@
 {
     "debug":false,
+	"color_projects":false,
     "unicode_borders":true,
     "todo_file_path": "TODO.txt",
     "WIP_identifier": "@WIP",
