@@ -31,7 +31,7 @@ To get a local copy up and running follow these simple steps.
    ```
 2. Install requirements
    ```sh
-   pip -r requirements.txt
+   pip install -r requirements.txt
    ```
 3. Run!
    ```sh
