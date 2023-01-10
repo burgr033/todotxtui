@@ -71,6 +71,7 @@ class SimpleTodoList:
         self.in_progress_scroll_cell.add_item_list(in_progress)
         self.done_scroll_cell.clear()
         self.done_scroll_cell.add_item_list(done)
+        self.force_cursor_position()
 
     # this handy function replaces something like due:today with the current date.
     # you can set 1 keyword today and for tomorrow in your own language
@@ -114,6 +115,12 @@ class SimpleTodoList:
         self.done_scroll_cell.remove_selected_item()
         self.save_todo_file()
 
+    # this is some hacky shit so that no item is selected and you don't see the first lines marked in every widget. This does not work after refresh.
+    def force_cursor_position(self):
+        self.todo_scroll_cell.set_selected_item_index(-1)
+        self.in_progress_scroll_cell.set_selected_item_index(-1)
+        self.done_scroll_cell.set_selected_item_index(-1)
+
     # function for adding items from the text box
     def add_item(self):
         self.color_everything()
@@ -137,6 +144,45 @@ class SimpleTodoList:
         self.color_context()
         if(config["color_projects"]):
             self.color_project()
+
+    def edit_menu_todo(self):
+        value = self.todo_scroll_cell.get()
+        self.master.show_text_box_popup(
+            'Edit Item', self.replace_item_todo, initial_text=value)
+
+    def edit_menu_in_progress(self):
+        value = self.in_progress_scroll_cell.get()
+        self.master.show_text_box_popup(
+            'Edit Item', self.replace_item_in_progress, initial_text=value)
+
+    def edit_menu_done(self):
+        value = self.done_scroll_cell.get()
+        self.master.show_text_box_popup(
+            'Edit Item', self.replace_item_done, initial_text=value)
+
+    def replace_item_todo(self, string):
+        self.todo_scroll_cell.remove_selected_item()
+        string = self.replace_keywords(string)
+        self.todo_scroll_cell.add_item(string)
+        self.save_todo_file()
+        self.read_todo_file()
+        self.master.move_focus(self.todo_scroll_cell)
+
+    def replace_item_in_progress(self, string):
+        self.in_progress_scroll_cell.remove_selected_item()
+        string = self.replace_keywords(string)
+        self.in_progress_scroll_cell.add_item(string)
+        self.save_todo_file()
+        self.read_todo_file()
+        self.master.move_focus(self.in_progress_scroll_cell)
+
+    def replace_item_done(self, string):
+        self.done_scroll_cell.remove_selected_item()
+        string = self.replace_keywords(string)
+        self.done_scroll_cell.add_item(string)
+        self.save_todo_file()
+        self.read_todo_file()
+        self.master.move_focus(self.done_scroll_cell)
 
     def color_date(self):
         self.todo_scroll_cell.add_text_color_rule(
@@ -173,8 +219,7 @@ class SimpleTodoList:
 
     # function for marking lines that are found during search
     def mark_line(self, search):
-        search_term = search['Find']
-        search_term = escape(search_term)
+        search_term = escape(search)
         search_term = self.replace_keywords(search_term)
         self.done_scroll_cell.add_text_color_rule(
             search_term, py_cui.WHITE_ON_BLUE, 'contains')
@@ -191,20 +236,6 @@ class SimpleTodoList:
         os.system(command)
         self.read_todo_file()
 
-    # i forgot why we needed this. *shrug* It works...
-    def find_form_trigger(self, form_output):
-        self.mark_line(form_output)
-
-    def prefil_textbox(self):
-        self.new_todo_textbox.set_text("() {}".format(today))
-
-    #hightlight one project as accessed through the form for highlighting projects
-    # yes i know i recycled the code from above. I'm currently lazy
-    def highlight_string(self,string):
-            self.color_everything()
-            self.todo_scroll_cell.add_text_color_rule(string.replace("+","\+"), py_cui.BLUE_ON_BLACK, 'contains', match_type='regex')
-            self.in_progress_scroll_cell.add_text_color_rule(string.replace("+","\+"), py_cui.BLUE_ON_BLACK, 'contains', match_type='regex')  
-
     # shows a popup with a filtered list so you can select certain project contextes (+) and highlight
     # yes i know i recycled the code from above. I'm currently lazy
     def open_project_highlight_form(self):
@@ -213,13 +244,13 @@ class SimpleTodoList:
         inprogressitems = self.in_progress_scroll_cell.get_item_list()
         all_items = todoitems + inprogressitems
         filtered_projects = set(findall(r"(\+[a-zA-Z-0-9]*)"," ".join(all_items)))
-        self.master.show_menu_popup("Highlight Projects",filtered_projects,self.highlight_string)
+        self.master.show_menu_popup(
+            "Highlight Projects", filtered_projects, self.mark_line)
     
     # function for opening search form
     def open_find_form(self):
         self.clear_all_colors()
-        self.master.show_form_popup('Find and Mark', ['Find'], required=[
-                                    'Find'], callback=self.find_form_trigger)
+        self.master.show_text_box_popup('Find and Mark', self.mark_line)
 
     # function that is called when you press enter in first widget.
     # it adds the work in progress tag context
@@ -251,7 +282,7 @@ class SimpleTodoList:
         self.in_progress_scroll_cell.remove_selected_item()
         self.done_scroll_cell.add_item(done)
         self.save_todo_file()
-
+   
     # this function saves the file
     def save_todo_file(self):
         if os.path.exists(config['todo_file_path']):
@@ -301,9 +332,10 @@ class SimpleTodoList:
         # press s in overview mode to safety save the file.
         self.master.add_key_command(
             py_cui.keys.KEY_S_LOWER, self.save_todo_file)
-        # press r to refresh the file and apply SORT
+        #open project filter highlight
         self.master.add_key_command(
             py_cui.keys.KEY_P_LOWER, self.open_project_highlight_form)
+        # press r to refresh the file and apply SORT
         self.master.add_key_command(
             py_cui.keys.KEY_R_LOWER, self.read_todo_file)
         # press f to open the search form and reset any marked lines from prior search
@@ -324,9 +356,25 @@ class SimpleTodoList:
         self.new_todo_textbox.add_key_command(
             py_cui.keys.KEY_ENTER, self.add_item)
 
+        
+
         # in TODO context ENTER adds an item to "IN PROGRESS"
         self.todo_scroll_cell.add_key_command(
             py_cui.keys.KEY_ENTER, self.mark_as_in_progress)
+
+        # in IN PROGRESS context ENTER adds an item to "DONE"
+        self.in_progress_scroll_cell.add_key_command(
+            py_cui.keys.KEY_ENTER, self.mark_as_done)
+
+        self.todo_scroll_cell.add_key_command(
+            py_cui.keys.KEY_E_LOWER, self.edit_menu_todo)
+        
+        self.in_progress_scroll_cell.add_key_command(
+            py_cui.keys.KEY_E_LOWER, self.edit_menu_in_progress)
+
+        self.done_scroll_cell.add_key_command(
+            py_cui.keys.KEY_E_LOWER, self.edit_menu_done)
+
 
         # in IN PROGRESS context ENTER adds an item to "DONE"
         self.in_progress_scroll_cell.add_key_command(
@@ -337,18 +385,15 @@ class SimpleTodoList:
         # color the due dates now
         self.color_everything()
 
-        # this is some hacky shit so that no item is selected and you don't see the first lines marked in every widget. This does not work after refresh.
-        self.todo_scroll_cell.set_selected_item_index(-1)
-        self.in_progress_scroll_cell.set_selected_item_index(-1)
-        self.done_scroll_cell.set_selected_item_index(-1)
-
+        self.force_cursor_position()
+        
         # these are the texts for each widget that are shown at the bottom border of the TUI
         self.todo_scroll_cell.set_focus_text(
-            'FUNNEL | ESC - OverView | ENTER - move to DOING')
+            'FUNNEL | ESC - OverView | ENTER - move to DOING | e - edit currently selected item')
         self.in_progress_scroll_cell.set_focus_text(
-            'DOING | ESC - OverView | ENTER - move to DONE')
+            'DOING | ESC - OverView | ENTER - move to DONE | e - edit currently selected item')
         self.done_scroll_cell.set_focus_text(
-            'DONE | ESC - OverView | DEL - remove selected item')
+            'DONE | ESC - OverView | DEL - remove selected item | e - edit currently selected item')
 
 
 root = py_cui.PyCUI(8, 6)
