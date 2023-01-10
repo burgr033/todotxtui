@@ -1,0 +1,45 @@
+(A) fix coloring due date only works if date is equal  +todotxtui
+(A) grocery shopping @aldi
+(B) TUI window shaken up when internal editor is opened +todotxtui
+(B) add a button with a form to add TODO line +todotxtui
+(B) add date in title bar, for quick checks +todotxtui
+(B) be compliant to todotxt standards +todotxtui
+(C) eat healthy +resolutions
+(C) work out +resolutions
+(C) sleep more +resolutions
+(A) Car needs a new battery +carrepair @workshop #WIP due:2023-01-11
+(B) change tires on bmw +carrepair #WIP due:2023-01-11
+x 2023-01-01 happy new year
+(A) Write a research paper on the history of computer science @work +Research
+(A) Plan a vacation to Hawaii @personal +Travel
+(A) Clean the garage @home +Cleaning
+(A) Buy groceries for the week @errands +Shopping
+(A) Attend a yoga class @personal +Fitness #WIP
+(B) Schedule a meeting with the team @work +Meetings
+(B) Get a hair cut @personal +Beauty #WIP
+(B) Plan a surprise party for a friend @personal +Social
+(C) Submit a project proposal to the client @work +Proposals
+(C) Read a book on personal development @personal +Learning
+(C) Take the dog for a walk @home +Pets
+(C) Fix the leaky faucet in the kitchen @home +HomeRepair #WIP
+(C) Book a car service appointment @errands +CarRepair
+(D) Go for a run in the park @personal +Fitness
+(D) Catch up on emails @work +Communications
+(D) Make a reservation at a restaurant @personal +Dining
+(D) Meet with a financial advisor @personal +Finance #WIP
+(D) Clean the windows @home +Cleaning
+(D) Practice playing the guitar @personal +Hobbies
+(D) Plan a date night with a partner @personal +Relationships
+(D) Take a self-defense class @personal +SelfDefense
+(D) Register for a 5K race @personal +Fitness #WIP
+(D) Go for a hike in the mountains @personal +Outdoor
+(D) Learn a new programming language @personal +Learning
+(D) Organize the closet @home +Cleaning
+(D) Go to the gym @personal +Fitness
+(D) Attend a networking event @work +Networking
+(D) Watch a movie with family @personal +Entertainment
+(D) Call a loved one @personal +Communications
+x 2022-12-25 remove tree from house
+x 2022-12-28 cook supper
+x 2022-03-01 happy Tuesday
+x 2022-07-09 call lawyer @phone

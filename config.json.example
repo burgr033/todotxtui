@@ -2,11 +2,11 @@
     "debug":false,
 	"color_projects":false,
     "unicode_borders":true,
-    "todo_file_path": "TODO.txt",
+    "todo_file_path": "todo.txt.sample",
     "WIP_identifier": "@WIP",
     "editor_path": "/usr/bin/nvim",
     "headings":{
-        "heading_intake": "FUNNEL",
+        "heading_intake": "BACKLOG",
         "heading_in_progress": "DOING",
         "heading_done":"DONE"
     },
