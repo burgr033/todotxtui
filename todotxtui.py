@@ -53,14 +53,13 @@ class SimpleTodoList:
             line = todo_fp.readline()
             while line:
                 line = line.strip()
-                if line.startswith("x "):
-                    if len(line) > 1:
+                if len(line) > 1:
+                    if line.startswith("x "):
                         done.append(line)
-                elif config['WIP_identifier'] in line:
-                    if len(line) > 1:
+                    elif config['WIP_identifier'] in line:
                         in_progress.append(line)
-                elif len(line) > 1:
-                    todo.append(line)
+                    else:
+                        todo.append(line)
                 line = todo_fp.readline()
             todo_fp.close()
         self.todo_scroll_cell.clear()
@@ -115,7 +114,7 @@ class SimpleTodoList:
         self.done_scroll_cell.remove_selected_item()
         self.save_todo_file()
 
-    # this is some hacky shit so that no item is selected and you don't see the first lines marked in every widget. This does not work after refresh.
+    # this is some hacky shit so that no item is selected and you don't see the first lines marked in every widget after reload / initial load
     def force_cursor_position(self):
         self.todo_scroll_cell.set_selected_item_index(-1)
         self.in_progress_scroll_cell.set_selected_item_index(-1)
@@ -137,29 +136,32 @@ class SimpleTodoList:
             self.new_todo_textbox.clear()
             self.save_todo_file()
 
-    # function for coloring due dates (tomorrow and today)
-
+    # wrapper function for coloring everything, so that i only have to call one function to re-color after re-load
     def color_everything(self):
         self.color_date()
         self.color_context()
         if(config["color_projects"]):
             self.color_project()
-
+    
+    # open edit menu
     def edit_menu_todo(self):
         value = self.todo_scroll_cell.get()
         self.master.show_text_box_popup(
             'Edit Item', self.replace_item_todo, initial_text=value)
 
+    # open edit menu
     def edit_menu_in_progress(self):
         value = self.in_progress_scroll_cell.get()
         self.master.show_text_box_popup(
             'Edit Item', self.replace_item_in_progress, initial_text=value)
-
+    
+    # open edit menu
     def edit_menu_done(self):
         value = self.done_scroll_cell.get()
         self.master.show_text_box_popup(
             'Edit Item', self.replace_item_done, initial_text=value)
 
+    # replace the edited item and save / read contet to todo file
     def replace_item_todo(self, string):
         self.todo_scroll_cell.remove_selected_item()
         string = self.replace_keywords(string)
@@ -168,6 +170,7 @@ class SimpleTodoList:
         self.read_todo_file()
         self.master.move_focus(self.todo_scroll_cell)
 
+    # replace the edited item and save / read contet to todo file
     def replace_item_in_progress(self, string):
         self.in_progress_scroll_cell.remove_selected_item()
         string = self.replace_keywords(string)
@@ -176,6 +179,7 @@ class SimpleTodoList:
         self.read_todo_file()
         self.master.move_focus(self.in_progress_scroll_cell)
 
+    # replace the edited item and save / read contet to todo file
     def replace_item_done(self, string):
         self.done_scroll_cell.remove_selected_item()
         string = self.replace_keywords(string)
@@ -184,6 +188,8 @@ class SimpleTodoList:
         self.read_todo_file()
         self.master.move_focus(self.done_scroll_cell)
 
+    # this function is for coloring due dates. everything that is colored yellow, is due tomorrow and everything that is colored red is due today.
+    # Missing is the coloring of past due dates. We need to regex through all items and check if the date lies in the past to achieve that.
     def color_date(self):
         self.todo_scroll_cell.add_text_color_rule(
             "due:{0}" .format(today), py_cui.WHITE_ON_RED, 'contains', match_type='regex')
@@ -199,7 +205,7 @@ class SimpleTodoList:
         self.todo_scroll_cell.add_text_color_rule("(@[^\s]+)", py_cui.GREEN_ON_BLACK, 'contains', match_type='regex')
         self.in_progress_scroll_cell.add_text_color_rule("(@[^\s]+)", py_cui.GREEN_ON_BLACK, 'contains', match_type='regex')
 
-# this should be to color different projects in different colors, as py_cui only has very a limited color amount, this is disabled by default via config
+    # this should be to color different projects in different colors, as py_cui only has very a limited color amount, this is disabled by default via config
     def color_project(self):
         available_colors = [py_cui.MAGENTA_ON_BLACK, py_cui.CYAN_ON_BLACK, py_cui.YELLOW_ON_BLACK, py_cui.BLUE_ON_BLACK, py_cui.RED_ON_BLACK]
         todoitems = self.todo_scroll_cell.get_item_list()
@@ -237,7 +243,7 @@ class SimpleTodoList:
         self.read_todo_file()
 
     # shows a popup with a filtered list so you can select certain project contextes (+) and highlight
-    # yes i know i recycled the code from above. I'm currently lazy
+    # yes i know i recycled the code from above. I'm currently lazy (calls mark_line)
     def open_project_highlight_form(self):
         self.clear_all_colors()
         todoitems = self.todo_scroll_cell.get_item_list()
@@ -247,14 +253,14 @@ class SimpleTodoList:
         self.master.show_menu_popup(
             "Highlight Projects", filtered_projects, self.mark_line)
     
-    # function for opening search form
+    # function for opening search form (calls mark_line)
     def open_find_form(self):
         self.clear_all_colors()
         self.master.show_text_box_popup('Find and Mark', self.mark_line)
 
     # function that is called when you press enter in first widget.
-    # it adds the work in progress tag context
-    # " @WIP" ius used as seperator that decides it is shown in "in progress"
+    # it adds the work in progress "tag"
+    # "#WIP" is used as seperator that decides it is shown in "in progress"
     # THIS IS NOT A KEYWORD IN TODOTXT standard, but it is save to use in todotxt syntax
     def mark_as_in_progress(self):
         in_prog = self.todo_scroll_cell.get()
@@ -304,46 +310,58 @@ class SimpleTodoList:
 
         self.master = master
 
+        #configure the grid of the widgets + the focus border color
         self.new_todo_textbox = self.master.add_text_box(
             'TODO Item',       0, 0, row_span=1, column_span=6)
         self.new_todo_textbox._focus_border_color = py_cui.BLUE_ON_BLACK
-
+        
+        #configure the grid of the widgets + the focus border color
         self.todo_scroll_cell = self.master.add_scroll_menu(
             'BACKLOG',       1, 0, row_span=7, column_span=3)
         self.todo_scroll_cell._focus_border_color = py_cui.BLUE_ON_BLACK
-
+        
+        #configure the grid of the widgets + the focus border color
         self.in_progress_scroll_cell = self.master.add_scroll_menu(
             'DOING',        1, 3, row_span=5, column_span=3)
         self.in_progress_scroll_cell._focus_border_color = py_cui.BLUE_ON_BLACK
 
+        #configure the grid of the widgets + the focus border color
         self.done_scroll_cell = self.master.add_scroll_menu(
             'DONE',         6, 3, row_span=2, column_span=3)
-
         self.done_scroll_cell._focus_border_color = py_cui.BLUE_ON_BLACK
 
+        # color of selected Item is BLACK_ON_WHITE
         self.todo_scroll_cell.set_selected_color(
             py_cui.BLACK_ON_WHITE)
 
+        # color of selected Item is BLACK_ON_WHITE
         self.in_progress_scroll_cell.set_selected_color(
             py_cui.BLACK_ON_WHITE)
 
+        # color of selected Item is BLACK_ON_WHITE
         self.done_scroll_cell.set_selected_color(
             py_cui.BLACK_ON_WHITE)
+
         # press s in overview mode to safety save the file.
         self.master.add_key_command(
             py_cui.keys.KEY_S_LOWER, self.save_todo_file)
+
         #open project filter highlight
         self.master.add_key_command(
             py_cui.keys.KEY_P_LOWER, self.open_project_highlight_form)
+
         # press r to refresh the file and apply SORT
         self.master.add_key_command(
             py_cui.keys.KEY_R_LOWER, self.read_todo_file)
+
         # press f to open the search form and reset any marked lines from prior search
         self.master.add_key_command(
             py_cui.keys.KEY_F_LOWER, self.open_find_form)
+
         # pressing o opens the text file in default system editor for quick multi editing or pasting. The TUI waits on close and reloads.
         self.master.add_key_command(
             py_cui.keys.KEY_O_LOWER, self.open_todotxt_file)
+
         # for quick cycling widgets press TAB
         self.master.set_widget_cycle_key(
             forward_cycle_key=py_cui.keys.KEY_TAB)
@@ -355,8 +373,6 @@ class SimpleTodoList:
         # in TEXTBOX context ENTER adds an item to "TODO"
         self.new_todo_textbox.add_key_command(
             py_cui.keys.KEY_ENTER, self.add_item)
-
-        
 
         # in TODO context ENTER adds an item to "IN PROGRESS"
         self.todo_scroll_cell.add_key_command(
