@@ -2,6 +2,7 @@
     "debug":false,
 	"color_projects":false,
     "unicode_borders":true,
+    "pw_hash": "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8",
     "todo_file_path": "todo.txt.sample",
     "WIP_identifier": "@WIP",
     "editor_path": "/usr/bin/nvim",
