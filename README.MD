@@ -1,6 +1,6 @@
 <!-- PROJECT LOGO -->
 <p align="center">
-    <a href=https://github.com/cigh033/todotxtui.git><img src=.github/logo.gif/></a>
+    <a href=https://github.com/burgr033/todotxtui.git><img src=.github/logo.gif/></a>
   <h3 align="center">TODOTXTUI - an intuitive TUI for TODO.txt files</h3>
 </p>
 
@@ -27,7 +27,7 @@ To get a local copy up and running follow these simple steps.
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/cigh033/todotxtui.git
+   git clone https://github.com/burgr033/todotxtui.git
    ```
 2. Install requirements
    ```sh
@@ -108,9 +108,9 @@ No Backup? No Mercy!
 <!-- CONTACT -->
 ## Contact
 
-[@cigh033](https://twitter.com/cigh033) - mail@cigh.de
+[@burgr033](https://twitter.com/burgr033) - mail@cigh.de
 
-Project Link: [https://github.com/cigh033/todotxtui](https://github.com/cigh033/todotxtui)
+Project Link: [https://github.com/burgr033/todotxtui](https://github.com/burgr033/todotxtui)
 
 <!-- ACKNOWLEDGEMENTS -->
 ## Acknowledgements
